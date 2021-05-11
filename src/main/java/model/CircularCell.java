@@ -5,7 +5,7 @@ import expr.ExprResult;
 
 public class CircularCell implements Cell {
     @Override public ExprResult evaluate(Environment env) throws CircularError {
-        throw new CircularError("Circular Value");
+        throw new CircularError("circular value");
     }
 
 }

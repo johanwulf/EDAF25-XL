@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class ExprCell implements Cell {
     Expr expr;
-    String string;
 
     public ExprCell(String expression) {
         try {

@@ -20,19 +20,20 @@ public class XLModel implements Environment {
    * @param text    the new code for the cell - can be raw text (starting with #) or an expression
    */
   public void update(CellAddress address, String text) {
-    // alt 1) text är tom
-    // alt 2) text börjar med # -> kommentar
-    // alt 3) text är ett uttryck
-
-    ExprCell newCell = new ExprCell(text);
-    cells.put(address.toString(), new CircularCell());
-
-    try {
-      newCell.evaluate(this);
-      cells.put(address.toString(), newCell);
-    } catch (Error e) {
-      // Hantera cirkulärt fel
-      cells.put(address.toString(), new ErrorCell());
+    if (text.equals("")) {        // alt 1) text är tom
+      cells.put(address.toString(), new EmptyCell());
+    } else if (text.startsWith("#")) {        // alt 2) text börjar med # -> kommentar
+      String comment = text.substring(1,text.length());
+      cells.put(address.toString(), new CommentCell(comment));
+    } else {    // alt 3) text är ett uttryck
+      ExprCell newCell = new ExprCell(text);
+      cells.put(address.toString(), new CircularCell());
+      try {       // kolla om uttrycket är cirkulärt
+        newCell.evaluate(this);
+        cells.put(address.toString(), newCell);
+      } catch (CircularError e) {        // Hantera cirkulärt fel
+        cells.put(address.toString(), new ErrorCell(e.getMessage()));
+      }
     }
   }
 
@@ -44,7 +45,7 @@ public class XLModel implements Environment {
   }
 
   @Override
-  public ExprResult value(String name) {
+  public ExprResult value(String name) throws CircularError {
     Cell cell = cells.get(name.toLowerCase());
     return cell.evaluate(this);
   }
