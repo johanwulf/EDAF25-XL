@@ -31,10 +31,11 @@ public class XLModel implements Environment {
       try {       // kolla om uttrycket är cirkulärt
         newCell.evaluate(this);
         cells.put(address.toString(), newCell);
-      } catch (CircularError e) {        // Hantera cirkulärt fel
+      } catch (Error e) {        // Hantera cirkulärt fel
         cells.put(address.toString(), new ErrorCell(e.getMessage()));
       }
     }
+      // beräkna om alla uttryck som kan ha ändrats
   }
 
   public void loadFile(File file) throws FileNotFoundException {
@@ -45,8 +46,13 @@ public class XLModel implements Environment {
   }
 
   @Override
-  public ExprResult value(String name) throws CircularError {
+  public ExprResult value(String name) {
     Cell cell = cells.get(name.toLowerCase());
-    return cell.evaluate(this);
+    try {
+      return cell.evaluate(this);
+    } catch (CircularError circularError) {
+      circularError.printStackTrace();
+    }
+    return null;
   }
 }
