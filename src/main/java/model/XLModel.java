@@ -4,6 +4,7 @@ import util.XLBufferedReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Map;
 
 import expr.*;
@@ -11,7 +12,7 @@ import expr.*;
 public class XLModel implements Environment {
   public static final int COLUMNS = 10, ROWS = 10;
 
-  Map<String, Cell> cells;
+  Map<String, Cell> cells = new HashMap<String, Cell>();
 
   /**
    * Called when the code for a cell changes.
