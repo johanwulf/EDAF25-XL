@@ -25,9 +25,11 @@ public class XLModel implements Environment {
   public void update(CellAddress address, String text) {
     if (text.equals("")) {        // alt 1) text är tom
       cells.put(address.toString(), new EmptyCell());
+      this.notifyObservers(address.toString(), "");
     } else if (text.startsWith("#")) {        // alt 2) text börjar med # -> kommentar
       String comment = text.substring(1,text.length());
       cells.put(address.toString(), new CommentCell(comment));
+      this.notifyObservers(address.toString(), cells.get(address.toString()).toString());
     } else {    // alt 3) text är ett uttryck
       ExprCell newCell = new ExprCell(text);
       cells.put(address.toString(), new CircularCell());
@@ -37,8 +39,15 @@ public class XLModel implements Environment {
       } catch (Error e) {        // Hantera cirkulärt fel
         cells.put(address.toString(), new ErrorCell(e.getMessage()));
       }
+      ExprResult result = this.value(address.toString());
+      if(result.isError()) {
+        this.notifyObservers(address.toString(), result.toString());
+      } else {
+        this.notifyObservers(address.toString(), String.valueOf(result.value()));
+      }
     }
-    this.notifyObservers(address.toString(), cells.get(address.toString()).evaluate(this).toString());
+    ExprResult result = cells.get(address.toString()).evaluate(this);
+
      // beräkna om alla uttryck som kan ha ändrats
 
   }
