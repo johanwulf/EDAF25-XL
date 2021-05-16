@@ -38,7 +38,7 @@ public class XLModel implements Environment {
         cells.put(address.toString(), new ErrorCell(e.getMessage()));
       }
     }
-    this.notifyObservers(address.toString(), cells.get(address.toString()).toString());
+    this.notifyObservers(address.toString(), cells.get(address.toString()).evaluate(this).toString());
      // beräkna om alla uttryck som kan ha ändrats
 
   }
@@ -52,13 +52,8 @@ public class XLModel implements Environment {
 
   @Override
   public ExprResult value(String name) {
-    Cell cell = cells.get(name.toLowerCase());
-    try {
-      return cell.evaluate(this);
-    } catch (CircularError circularError) {
-      circularError.printStackTrace();
-    }
-    return null;
+    Cell cell = cells.get(name);
+    return cell.evaluate(this);
   }
 
   public void addObserver(Observer observer) {
