@@ -31,6 +31,7 @@ public class XL extends Application {
 
   public XL() {
     // TODO: add listener(s) for model?
+    model.addObserver((address, value) -> this.cellValueUpdated(address, value));
   }
 
   public void onCellSelected(GridCell cell) {

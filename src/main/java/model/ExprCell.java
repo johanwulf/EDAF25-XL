@@ -15,6 +15,10 @@ public class ExprCell implements Cell {
         }
     }
 
+    public String toString() {  // redigera
+        return expr.toString();
+    }
+
     @Override
     public ExprResult evaluate(Environment env) {
         return expr.value(env);

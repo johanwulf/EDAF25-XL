@@ -4,6 +4,7 @@ import util.XLBufferedReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,8 @@ import expr.*;
 public class XLModel implements Environment {
   public static final int COLUMNS = 10, ROWS = 10;
 
-  Map<String, Cell> cells = new HashMap<String, Cell>();
+  Map<String, Cell> cells = new HashMap<>();
+  ArrayList<Observer> observers = new ArrayList<>();
 
   /**
    * Called when the code for a cell changes.
@@ -36,7 +38,9 @@ public class XLModel implements Environment {
         cells.put(address.toString(), new ErrorCell(e.getMessage()));
       }
     }
-      // beräkna om alla uttryck som kan ha ändrats
+    this.notifyObservers(address.toString(), cells.get(address.toString()).toString());
+     // beräkna om alla uttryck som kan ha ändrats
+
   }
 
   public void loadFile(File file) throws FileNotFoundException {
@@ -56,4 +60,15 @@ public class XLModel implements Environment {
     }
     return null;
   }
+
+  public void addObserver(Observer observer) {
+    observers.add(observer);
+  }
+
+  private void notifyObservers(String address, String value) {
+    for(Observer observer : observers) {
+      observer.onUpdate(address, value);
+    }
+  }
+
 }
