@@ -16,14 +16,12 @@ public class XLModel extends CellFactory implements Environment {
   public static final int COLUMNS = 10, ROWS = 10;
 
   Map<String, Cell> cells = new HashMap<>();
-  Map<String, String> map = new HashMap<>();
   ArrayList<Observer> observers = new ArrayList<>();
 
   public XLModel() {
     for (int row = 0; row < ROWS; row++) {
       for (int col = 0; col < COLUMNS; col++) {
         cells.put(new CellAddress(row, col).toString(), new EmptyCell());
-        map.put(new CellAddress(row, col).toString(), "");
       }
     }
   }
