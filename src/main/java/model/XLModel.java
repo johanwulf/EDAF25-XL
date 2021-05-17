@@ -66,14 +66,18 @@ public class XLModel implements Environment {
       String value = cell.toString();
 
       if (cell instanceof ExprCell) {
+        ExprCell newCell = new ExprCell(value);
+        cells.put(address.toString(), new CircularCell());
         try {
+          newCell.evaluate(this);
           value = String.valueOf(cell.evaluate(this).value());
         } catch (Error e) {
           value = new ErrorCell(e.getMessage()).toString();
+          cell = new ErrorCell(e.getMessage());
         }
       }
 
-      System.out.println(address + " " + value);
+      cells.put(address, cell);
       notifyObservers(address, value);
     });
   }
