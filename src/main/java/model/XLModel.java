@@ -36,16 +36,10 @@ public class XLModel extends CellFactory implements Environment {
    */
   public void update(CellAddress address, String text) {
     String rawAddress = address.toString();
+    Cell cell = createCell(text);
+    cells.put(rawAddress, cell);
 
-    if (text.equals("")) {
-      cells.put(rawAddress, new EmptyCell());
-      this.notifyObservers(rawAddress, "");
-    } else {
-      Cell cell = createCell(text);
-      cells.put(rawAddress, cell);
-      this.notifyObservers(rawAddress, cell.toString());
-    }
-
+    this.notifyObservers(rawAddress, cell.toString());
     updateAllCells();
   }
 
