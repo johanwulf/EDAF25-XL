@@ -33,30 +33,26 @@ public class XLModel implements Environment {
    * @param text    the new code for the cell - can be raw text (starting with #) or an expression
    */
   public void update(CellAddress address, String text) {
-    if (text.equals("")) {        // alt 1) text är tom
+    if (text.equals("")) {
       cells.put(address.toString(), new EmptyCell());
-      this.notifyObservers(address.toString(), "");
-    } else if (text.startsWith("#")) {        // alt 2) text börjar med # -> kommentar
+      this.notifyObservers(address.toString(), text);
+    } else if (text.startsWith("#")) {
       String comment = text.substring(1,text.length());
       cells.put(address.toString(), new CommentCell(comment));
-      this.notifyObservers(address.toString(), cells.get(address.toString()).toString());
-    } else {    // alt 3) text är ett uttryck
+      this.notifyObservers(address.toString(), text);
+    } else {
       ExprCell newCell = new ExprCell(text);
       cells.put(address.toString(), new CircularCell());
-      try {       // kolla om uttrycket är cirkulärt
+
+      try {
         newCell.evaluate(this);
         cells.put(address.toString(), newCell);
-      } catch (Error e) {        // Hantera cirkulärt fel
-        cells.put(address.toString(), new ErrorCell(e.getMessage()));
+        this.notifyObservers(address.toString(), newCell.evaluate(this).toString());
+      } catch (Error e) {
+        this.notifyObservers(address.toString(), text);
       }
-      ExprResult result = this.value(address.toString());
-      if(result.isError()) {
-        this.notifyObservers(address.toString(), result.toString());
-      } else {
-        this.notifyObservers(address.toString(), String.valueOf(result.value()));
-      }
+
     }
-    ExprResult result = cells.get(address.toString()).evaluate(this);
   }
 
   public void updateAllCells() {
@@ -68,17 +64,18 @@ public class XLModel implements Environment {
       if (cell instanceof ExprCell) {
         ExprCell newCell = new ExprCell(value);
         cells.put(address.toString(), new CircularCell());
+
         try {
           newCell.evaluate(this);
-          value = String.valueOf(cell.evaluate(this).value());
+          cells.put(address.toString(), newCell);
+          this.notifyObservers(address.toString(), newCell.evaluate(this).toString());
         } catch (Error e) {
-          value = new ErrorCell(e.getMessage()).toString();
-          cell = new ErrorCell(e.getMessage());
+          this.notifyObservers(address.toString(), value);
         }
+      } else {
+        cells.put(address, cell);
+        notifyObservers(address, value);
       }
-
-      cells.put(address, cell);
-      notifyObservers(address, value);
     });
   }
 

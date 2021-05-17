@@ -6,8 +6,11 @@ import java.io.IOException;
 
 public class ExprCell implements Cell {
     Expr expr;
+    String rawexpr;
 
     public ExprCell(String expression) {
+        rawexpr = expression;
+
         try {
             expr = new ExprParser().build(expression);
         } catch (IOException e) {
@@ -15,8 +18,10 @@ public class ExprCell implements Cell {
         }
     }
 
+
+
     public String toString() {  // redigera
-        return expr.toString();
+        return rawexpr;
     }
 
     @Override
