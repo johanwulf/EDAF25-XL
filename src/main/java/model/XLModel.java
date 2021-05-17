@@ -87,4 +87,13 @@ public class XLModel implements Environment {
     }
   }
 
+  public void clearAll() {
+    for (String address : cells.keySet()) {
+      cells.put(address, new EmptyCell());
+    }
+  }
+
+  public void clearCell(CellAddress address) {
+    cells.put(address.toString(), new EmptyCell());
+  }
 }

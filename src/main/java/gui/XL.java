@@ -123,6 +123,14 @@ public class XL extends Application {
     }
   }
 
+  public void clearAll() {
+    model.clearAll();
+  }
+
+  public void clearCell() {
+    model.clearCell(currentCell.get().address);
+  }
+
   public void loadFile(File file) {
     try {
       model.loadFile(file);
