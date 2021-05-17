@@ -90,10 +90,12 @@ public class XLModel implements Environment {
   public void clearAll() {
     for (String address : cells.keySet()) {
       cells.put(address, new EmptyCell());
+      this.notifyObservers(address, "");
     }
   }
 
   public void clearCell(CellAddress address) {
     cells.put(address.toString(), new EmptyCell());
+    this.notifyObservers(address.toString(), "");
   }
 }
