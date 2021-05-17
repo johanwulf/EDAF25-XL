@@ -64,7 +64,11 @@ public class XLModel implements Environment {
       String value = cell.toString();
 
       if (cell instanceof ExprCell) {
-        value = String.valueOf(cell.evaluate(this).value());
+        try {
+          value = String.valueOf(cell.evaluate(this).value());
+        } catch (Error e) {
+
+        }
       }
 
       notifyObservers(address, value);
@@ -101,12 +105,12 @@ public class XLModel implements Environment {
   public void clearAll() {
     for (String address : cells.keySet()) {
       cells.put(address, new EmptyCell());
-      this.notifyObservers(address, "");
     }
+    updateAllCells();
   }
 
   public void clearCell(CellAddress address) {
     cells.put(address.toString(), new EmptyCell());
-    this.notifyObservers(address.toString(), "");
+    updateAllCells();
   }
 }
