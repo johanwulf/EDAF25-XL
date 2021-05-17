@@ -67,7 +67,7 @@ public class XLModel implements Environment {
         try {
           value = String.valueOf(cell.evaluate(this).value());
         } catch (Error e) {
-
+          value = new ErrorCell(e.getMessage()).toString();
         }
       }
 
