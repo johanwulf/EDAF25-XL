@@ -55,9 +55,20 @@ public class XLModel implements Environment {
       }
     }
     ExprResult result = cells.get(address.toString()).evaluate(this);
+  }
 
-     // beräkna om alla uttryck som kan ha ändrats
+  public void updateAllCells() {
+    cells.entrySet().forEach(entry -> {
+      String address = entry.getKey();
+      Cell cell = entry.getValue();
+      String value = cell.toString();
 
+      if (cell instanceof ExprCell) {
+        value = String.valueOf(cell.evaluate(this).value());
+      }
+
+      notifyObservers(address, value);
+    });
   }
 
   public void loadFile(File file) throws FileNotFoundException {

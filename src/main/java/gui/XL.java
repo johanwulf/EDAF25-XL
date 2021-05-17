@@ -69,6 +69,7 @@ public class XL extends Application {
       GridCell cell = currentCell.get();
       if (cell != null) {
         model.update(cell.address, editor.getText());
+        model.updateAllCells();
       }
     });
     currentCell.addListener((observable, oldValue, newValue) -> {
