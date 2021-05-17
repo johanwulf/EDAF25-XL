@@ -73,12 +73,14 @@ public class XLModel implements Environment {
         }
       }
 
+      System.out.println(address + " " + value);
       notifyObservers(address, value);
     });
   }
 
   public void loadFile(File file) throws IOException {
     XLBufferedReader reader = new XLBufferedReader(file);
+    clearAll();
     reader.load(cells);
     updateAllCells();
   }

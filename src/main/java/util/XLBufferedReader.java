@@ -25,8 +25,13 @@ public class XLBufferedReader extends BufferedReader {
         String address = values[0];
         String value = values[1];
 
-        System.out.println(address + " " + value);
-
+        if (value.startsWith("#")) {
+          map.put(address, new CommentCell(value));
+        } else if (value.equals("")) {
+          map.put(address, new EmptyCell());
+        } else {
+          map.put(address, new ExprCell(value));
+        }
       }
     } catch (Exception e) {
       throw new XLException(e.getMessage());
