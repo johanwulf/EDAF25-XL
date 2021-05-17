@@ -16,6 +16,14 @@ public class XLModel implements Environment {
   Map<String, Cell> cells = new HashMap<>();
   ArrayList<Observer> observers = new ArrayList<>();
 
+  public XLModel() {
+    for (int row = 0; row < ROWS; row++) {
+      for (int col = 0; col < COLUMNS; col++) {
+        cells.put(new CellAddress(row, col).toString(), new EmptyCell());
+      }
+    }
+  }
+
   /**
    * Called when the code for a cell changes.
    *
@@ -63,6 +71,10 @@ public class XLModel implements Environment {
   public ExprResult value(String name) {
     Cell cell = cells.get(name);
     return cell.evaluate(this);
+  }
+
+  public String readCell(CellAddress address) {
+    return cells.get(address.toString()).toString();
   }
 
   public void addObserver(Observer observer) {

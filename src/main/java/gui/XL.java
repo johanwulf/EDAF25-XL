@@ -72,6 +72,8 @@ public class XL extends Application {
       }
     });
     currentCell.addListener((observable, oldValue, newValue) -> {
+      System.out.println(oldValue);
+      System.out.println(newValue);
       if (oldValue != null) {
         oldValue.onDeselect();
       }
@@ -79,6 +81,9 @@ public class XL extends Application {
         addressLbl.setText(newValue.address.toString() + " =");
         editor.setDisable(false);
         // TODO: update editor text.
+        String text = model.readCell(newValue.address);
+        editor.setText(text);
+
         editor.requestFocus();
       } else {
         addressLbl.setText("?? =");
