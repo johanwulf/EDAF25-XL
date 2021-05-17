@@ -12,16 +12,18 @@ import java.util.Map;
 import expr.*;
 import util.XLPrintStream;
 
-public class XLModel implements Environment {
+public class XLModel extends CellFactory implements Environment {
   public static final int COLUMNS = 10, ROWS = 10;
 
   Map<String, Cell> cells = new HashMap<>();
+  Map<String, String> map = new HashMap<>();
   ArrayList<Observer> observers = new ArrayList<>();
 
   public XLModel() {
     for (int row = 0; row < ROWS; row++) {
       for (int col = 0; col < COLUMNS; col++) {
         cells.put(new CellAddress(row, col).toString(), new EmptyCell());
+        map.put(new CellAddress(row, col).toString(), "");
       }
     }
   }
@@ -33,50 +35,49 @@ public class XLModel implements Environment {
    * @param text    the new code for the cell - can be raw text (starting with #) or an expression
    */
   public void update(CellAddress address, String text) {
+    String rawAddress = address.toString();
+
     if (text.equals("")) {
-      cells.put(address.toString(), new EmptyCell());
-      this.notifyObservers(address.toString(), text);
-    } else if (text.startsWith("#")) {
-      String comment = text.substring(1,text.length());
-      cells.put(address.toString(), new CommentCell(comment));
-      this.notifyObservers(address.toString(), text);
+      cells.put(rawAddress, new EmptyCell());
+      this.notifyObservers(rawAddress, "");
     } else {
-      ExprCell newCell = new ExprCell(text);
-      cells.put(address.toString(), new CircularCell());
-
-      try {
-        newCell.evaluate(this);
-        cells.put(address.toString(), newCell);
-        this.notifyObservers(address.toString(), newCell.evaluate(this).toString());
-      } catch (Error e) {
-        this.notifyObservers(address.toString(), text);
-      }
-
+      Cell cell = createCell(text);
+      cells.put(rawAddress, cell);
+      this.notifyObservers(rawAddress, cell.toString());
     }
+
+    updateAllCells();
   }
 
   public void updateAllCells() {
     cells.entrySet().forEach(entry -> {
       String address = entry.getKey();
-      Cell cell = entry.getValue();
-      String value = cell.toString();
+      String text = entry.getValue().toString();
 
-      if (cell instanceof ExprCell) {
-        ExprCell newCell = new ExprCell(value);
-        cells.put(address.toString(), new CircularCell());
-
-        try {
-          newCell.evaluate(this);
-          cells.put(address.toString(), newCell);
-          this.notifyObservers(address.toString(), newCell.evaluate(this).toString());
-        } catch (Error e) {
-          this.notifyObservers(address.toString(), value);
-        }
-      } else {
-        cells.put(address, cell);
-        notifyObservers(address, value);
-      }
+      String value = calculateCell(text, address);
+      this.notifyObservers(address, value);
     });
+  }
+
+  private String calculateCell(String text, String address) {
+    if (text == null || text.equals("")) {
+      return "";
+    }
+
+    if (text.startsWith("#")) {
+      return text;
+    }
+
+    ExprCell cell = new ExprCell(text);
+    cells.put(address, new CircularCell(text));
+
+    try {
+      cells.put(address, cell);
+      return cell.evaluate(this).toString();
+    } catch (Error e) {
+      System.out.println(e.getMessage());
+      return "circular error";
+    }
   }
 
   public void loadFile(File file) throws IOException {
