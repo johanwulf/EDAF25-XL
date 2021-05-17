@@ -57,7 +57,7 @@ public class XLModel extends CellFactory implements Environment {
     }
 
     if (text.startsWith("#")) {
-      return text;
+      return text.substring(1);
     }
 
     ExprCell cell = new ExprCell(text);
