@@ -71,11 +71,12 @@ public class XLModel extends CellFactory implements Environment {
     ExprCell cell = new ExprCell(text);
     cells.put(address, new CircularCell(text));
 
+
+
     try {
       cells.put(address, cell);
       return cell.evaluate(this).toString();
     } catch (Error e) {
-      System.out.println(e.getMessage());
       return "circular error";
     }
   }
