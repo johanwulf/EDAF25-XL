@@ -1,5 +1,7 @@
 package util;
 
+import model.Cell;
+
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Map.Entry;
@@ -11,11 +13,13 @@ public class XLPrintStream extends PrintStream {
   }
 
   // TODO Change Object to something appropriate
-  public void save(Set<Entry<String, Object>> set) {
-    for (Entry<String, Object> entry : set) {
-      print(entry.getKey());
-      print('=');
-      println(entry.getValue());
+  public void save(Set<Entry<String, Cell>> set) {
+    for (Entry<String, Cell> entry : set) {
+      if(entry.getValue().toString() != "") {
+        print(entry.getKey());
+        print('=');
+        println(entry.getValue());
+      }
     }
     flush();
     close();

@@ -4,11 +4,13 @@ import util.XLBufferedReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import expr.*;
+import util.XLPrintStream;
 
 public class XLModel implements Environment {
   public static final int COLUMNS = 10, ROWS = 10;
@@ -75,11 +77,16 @@ public class XLModel implements Environment {
     });
   }
 
-  public void loadFile(File file) throws FileNotFoundException {
+  public void loadFile(File file) throws IOException {
     XLBufferedReader reader = new XLBufferedReader(file);
+    reader.load(cells);
+    updateAllCells();
   }
 
-  public void saveFile(File file) {
+  public void saveFile(File file) throws FileNotFoundException {
+    System.out.println("in");
+    XLPrintStream writer = new XLPrintStream(file.getName());
+    writer.save(cells.entrySet());
   }
 
   @Override

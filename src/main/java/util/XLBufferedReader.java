@@ -1,5 +1,8 @@
 package util;
 
+import expr.ExprResult;
+import model.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,12 +16,17 @@ public class XLBufferedReader extends BufferedReader {
   }
 
   // TODO Change Object to something appropriate
-  public void load(Map<String, Object> map) throws IOException {
+  public void load(Map<String, Cell> map) throws IOException {
     try {
       while (ready()) {
         String string = readLine();
-        int i = string.indexOf('=');
-        // TODO
+        String[] values = string.split("=", 2);
+
+        String address = values[0];
+        String value = values[1];
+
+        System.out.println(address + " " + value);
+
       }
     } catch (Exception e) {
       throw new XLException(e.getMessage());
