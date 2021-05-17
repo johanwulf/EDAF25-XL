@@ -37,7 +37,6 @@ public class XLModel extends CellFactory implements Environment {
     Cell cell = createCell(text);
     cells.put(rawAddress, cell);
 
-    this.notifyObservers(rawAddress, cell.toString());
     updateAllCells();
   }
 
@@ -62,7 +61,7 @@ public class XLModel extends CellFactory implements Environment {
 
     ExprCell cell = new ExprCell(text);
     cells.put(address, new CircularCell(text));
-    
+
     try {
       cells.put(address, cell);
       return cell.evaluate(this).toString();
