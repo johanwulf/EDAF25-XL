@@ -13,7 +13,7 @@ public class XLPrintStream extends PrintStream {
   // TODO Change Object to something appropriate
   public void save(Set<Entry<String, Cell>> set) {
     for (Entry<String, Cell> entry : set) {
-      if(entry.getValue().toString().equals("")) {
+      if(!entry.getValue().toString().equals("")) {
         print(entry.getKey());
         print('=');
         println(entry.getValue());
