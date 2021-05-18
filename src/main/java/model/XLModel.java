@@ -1,5 +1,7 @@
 package model;
 
+import util.XLBufferedReader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import expr.*;
+import util.XLPrintStream;
 
 public class XLModel extends CellFactory implements Environment {
   public static final int COLUMNS = 10, ROWS = 10;

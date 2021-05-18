@@ -1,4 +1,6 @@
-package model;
+package util;
+
+import model.Cell;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
