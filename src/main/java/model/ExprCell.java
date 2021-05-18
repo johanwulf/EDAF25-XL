@@ -20,7 +20,7 @@ public class ExprCell implements Cell {
 
 
 
-    public String toString() {  // redigera
+    public String toString() {
         return rawexpr;
     }
 

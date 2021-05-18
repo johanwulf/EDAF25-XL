@@ -38,9 +38,8 @@ public class XLModel extends CellFactory implements Environment {
   }
 
   public void updateAllCells() {
-    cells.entrySet().forEach(entry -> {
-      String address = entry.getKey();
-      String text = entry.getValue().toString();
+    cells.forEach((address, value1) -> {
+      String text = value1.toString();
 
       String value = calculateCell(text, address);
       this.notifyObservers(address, value);
@@ -101,9 +100,7 @@ public class XLModel extends CellFactory implements Environment {
   }
 
   public void clearAll() {
-    for (String address : cells.keySet()) {
-      cells.put(address, new EmptyCell());
-    }
+    cells.replaceAll((a, v) -> new EmptyCell());
     updateAllCells();
   }
 
